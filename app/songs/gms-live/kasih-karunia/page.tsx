@@ -35,12 +35,21 @@ const sections = [
     label: "Intro",
     content: "Intro:\n| C • Fm/C • |\n| C • Am • |\n| F Bb Dm G |",
   },
-  { label: "Verse", content: "Verse:\nC               F\n...\n..." },
+  {
+    label: "Verse",
+    content:
+      "Verse:\nC               F\nKasih setia-Mu tak pernah pudar\nC\nSungguh Kau Tuhan\nF\nYang panjang sabar\nAm              E/Ab\nSemua yang baik\nC            D/F#\nDi dalam hidupku\nDm7          G\nAnugerah dari Salib-Mu.",
+  },
   {
     label: "Chorus",
-    content: "Chorus:\nC        G        Am      Em\n...\n...",
+    content:
+      "Chorus:\nC        G        Am      Em\nBesar... Kasih Karunia\nF           C\nYang Engkau tunjukkan, Yesus\nDm7        G\nSungguh ‘ku bersyukur\nC        G        Am      Em\nTinggi... melebihi langit\nF           C\nKau angkat diriku dekat\nDm         G         C\nKe tahta kasih karuniaMu.",
   },
-  { label: "Bridge", content: "Bridge:\nD            Em7    D/F#\n...\n..." },
+  {
+    label: "Bridge",
+    content:
+      "Bridge:\nD            Em7    D/F#\nWo...o...o...o...\nG            D/F#    Em7     A\nSemua kar’na kasih karunia-Mu\nD/F#         F#/Bb   Bm   E/Ab\nSemua kar’na kasih karunia-Mu.",
+  },
 ];
 
 const KasihKarunia = () => {
@@ -48,7 +57,7 @@ const KasihKarunia = () => {
   const [editMode, setEditMode] = useState(false);
   const [selectedSection, setSelectedSection] = useState(sections[0].content);
 
-  const moveItemUp = (index) => {
+  const moveItemUp = (index: number) => {
     if (index === 0) return;
     const items = Array.from(lyrics);
     const [reorderedItem] = items.splice(index, 1);
@@ -56,7 +65,7 @@ const KasihKarunia = () => {
     setLyrics(items);
   };
 
-  const moveItemDown = (index) => {
+  const moveItemDown = (index: number) => {
     if (index === lyrics.length - 1) return;
     const items = Array.from(lyrics);
     const [reorderedItem] = items.splice(index, 1);
@@ -76,7 +85,7 @@ const KasihKarunia = () => {
     setLyrics(initialLyrics);
   };
 
-  const deleteSection = (index) => {
+  const deleteSection = (index: number) => {
     const items = Array.from(lyrics);
     items.splice(index, 1);
     setLyrics(items);
