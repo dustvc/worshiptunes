@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import jsPDF from "jspdf";
 
 const initialLyrics = [
   {
@@ -36,9 +37,14 @@ const sections = [
     content: "Intro:\n| C • Fm/C • |\n| C • Am • |\n| F Bb Dm G |",
   },
   {
-    label: "Verse",
+    label: "Verse 1",
     content:
-      "Verse:\nC               F\nKasih setia-Mu tak pernah pudar\nC\nSungguh Kau Tuhan\nF\nYang panjang sabar\nAm              E/Ab\nSemua yang baik\nC            D/F#\nDi dalam hidupku\nDm7          G\nAnugerah dari Salib-Mu.",
+      "Verse 1:\nC               F\nKasih setia-Mu tak pernah pudar\nC\nSungguh Kau Tuhan\nF\nYang panjang sabar\nAm              E/Ab\nSemua yang baik\nC            D/F#\nDi dalam hidupku\nDm7          G\nAnugerah dari Salib-Mu.",
+  },
+  {
+    label: "Verse 2",
+    content:
+      "Verse 2:\nC               F\nWalaupun terkadang aku jatuh\nC               F\nTak pernah berubah sayangMu\nAm              E/Ab\nSungguh tak kuduga\nC/D           D/F#\nKau tetap setia\nDm7          G\nMenantiku ‘tuk berlari padaMu.",
   },
   {
     label: "Chorus",
@@ -52,10 +58,37 @@ const sections = [
   },
 ];
 
+const transposeChord = (chord: string, steps: number): string => {
+  const chords = [
+    "A",
+    "Bb",
+    "B",
+    "C",
+    "Db",
+    "D",
+    "Eb",
+    "E",
+    "F",
+    "Gb",
+    "G",
+    "Ab",
+  ];
+  const chordIndex = chords.indexOf(chord);
+  if (chordIndex === -1) return chord;
+  const newIndex = (chordIndex + steps + chords.length) % chords.length;
+  return chords[newIndex];
+};
+
+const transposeLyrics = (lyrics: string, steps: number): string => {
+  const chordRegex = /\b[A-G](#|b)?(m7|m|7|sus|dim|aug|add9|9)?\b/g;
+  return lyrics.replace(chordRegex, (match) => transposeChord(match, steps));
+};
+
 const KasihKarunia = () => {
   const [lyrics, setLyrics] = useState(initialLyrics);
   const [editMode, setEditMode] = useState(false);
   const [selectedSection, setSelectedSection] = useState(sections[0].content);
+  const [transposeSteps, setTransposeSteps] = useState(0);
 
   const moveItemUp = (index: number) => {
     if (index === 0) return;
@@ -83,12 +116,51 @@ const KasihKarunia = () => {
 
   const resetLyrics = () => {
     setLyrics(initialLyrics);
+    setTransposeSteps(0);
   };
 
   const deleteSection = (index: number) => {
     const items = Array.from(lyrics);
     items.splice(index, 1);
     setLyrics(items);
+  };
+
+  const transposeKeys = [
+    "A",
+    "Bb",
+    "B",
+    "C",
+    "Db",
+    "D",
+    "Eb",
+    "E",
+    "F",
+    "Gb",
+    "G",
+    "Ab",
+  ];
+
+  const handleTranspose = (steps: number) => {
+    const transposedLyrics = initialLyrics.map((lyric) => ({
+      ...lyric,
+      content: transposeLyrics(lyric.content, steps),
+    }));
+    setLyrics(transposedLyrics);
+    setTransposeSteps(steps);
+  };
+
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    let y = 10; // Starting Y position
+    lyrics.forEach((lyric) => {
+      const lines = lyric.content.split("\n");
+      lines.forEach((line) => {
+        doc.text(line, 10, y);
+        y += 10; // Move to next line
+      });
+      y += 10; // Add extra space between sections
+    });
+    doc.save("lyrics.pdf");
   };
 
   return (
@@ -139,6 +211,34 @@ const KasihKarunia = () => {
             </button>
           </>
         )}
+      </div>
+      <div className="mb-4">
+        <label htmlFor="transpose" className="mr-2">
+          Transpose:
+        </label>
+        <div className="flex">
+          {transposeKeys.map((key, index) => (
+            <button
+              key={key}
+              className={`px-4 py-2 border ${
+                transposeSteps === index - 3
+                  ? "bg-red-500 text-white"
+                  : "bg-white text-black"
+              }`}
+              onClick={() => handleTranspose(index - 3)}
+            >
+              {key}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="mb-4">
+        <button
+          className="bg-purple-500 text-white px-4 py-2 rounded"
+          onClick={downloadPDF}
+        >
+          Download PDF
+        </button>
       </div>
       <div>
         {lyrics.map(({ id, content }, index) => (
