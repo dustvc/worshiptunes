@@ -39,7 +39,7 @@ const sections = [
   {
     label: "Verse 1",
     content:
-      "Verse 1:\nC               F\nKasih setia-Mu tak pernah pudar\nC\nSungguh Kau Tuhan\nF\nYang panjang sabar\nAm              E/Ab\nSemua yang baik\nC            D/F#\nDi dalam hidupku\nDm7          G\nAnugerah dari Salib-Mu.",
+      "Verse 1:\nC                   F\nKasih setia-Mu tak pernah pudar\nC\nSungguh Kau Tuhan\nF\nYang panjang sabar\nAm              E/Ab\nSemua yang baik\nC            D/F#\nDi dalam hidupku\nDm7          G\nAnugerah dari Salib-Mu.",
   },
   {
     label: "Verse 2",
@@ -152,9 +152,14 @@ const KasihKarunia = () => {
   const downloadPDF = () => {
     const doc = new jsPDF();
     let y = 10; // Starting Y position
+    const pageHeight = doc.internal.pageSize.height;
     lyrics.forEach((lyric) => {
       const lines = lyric.content.split("\n");
       lines.forEach((line) => {
+        if (y + 10 > pageHeight) {
+          doc.addPage();
+          y = 10; // Reset y position for new page
+        }
         doc.text(line, 10, y);
         y += 10; // Move to next line
       });
@@ -180,21 +185,21 @@ const KasihKarunia = () => {
       </div>
       <div className="mb-4">
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+          className="bg-gray-700 text-white px-4 py-2 rounded-full border-2 border-gray-700 hover:animate-pulse mr-2"
           onClick={() => setEditMode(!editMode)}
         >
-          {editMode ? "Exit Edit Mode" : "Enter Edit Mode"}
+          {editMode ? "Done" : "Edit Songmap"}
         </button>
         {editMode && (
           <>
             <button
-              className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+              className="bg-gray-700 text-white px-4 py-2 rounded-full border-2 border-gray-700 hover:animate-pulse mr-2"
               onClick={addNewSection}
             >
               Add New Section
             </button>
             <select
-              className="bg-gray-200 text-gray-700 px-4 py-2 rounded mr-2"
+              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-full border-2 border-gray-700 mr-2"
               onChange={(e) => setSelectedSection(e.target.value)}
             >
               {sections.map((section) => (
@@ -204,13 +209,19 @@ const KasihKarunia = () => {
               ))}
             </select>
             <button
-              className="bg-red-500 text-white px-4 py-2 rounded"
+              className="bg-gray-700 text-white px-4 py-2 rounded-full border-2 border-gray-700 hover:animate-pulse mr-2"
               onClick={resetLyrics}
             >
-              Reset
+              Reset to Original
             </button>
           </>
         )}
+        <button
+          className="bg-white text-gray-700 px-4 py-2 rounded-full border-2 border-gray-700 hover:animate-pulse"
+          onClick={downloadPDF}
+        >
+          Download Songmap
+        </button>
       </div>
       <div className="mb-4">
         <label htmlFor="transpose" className="mr-2">
@@ -222,7 +233,7 @@ const KasihKarunia = () => {
               key={key}
               className={`px-4 py-2 border ${
                 transposeSteps === index - 3
-                  ? "bg-red-500 text-white"
+                  ? "bg-gray-700 text-white"
                   : "bg-white text-black"
               }`}
               onClick={() => handleTranspose(index - 3)}
@@ -231,14 +242,6 @@ const KasihKarunia = () => {
             </button>
           ))}
         </div>
-      </div>
-      <div className="mb-4">
-        <button
-          className="bg-purple-500 text-white px-4 py-2 rounded"
-          onClick={downloadPDF}
-        >
-          Download PDF
-        </button>
       </div>
       <div>
         {lyrics.map(({ id, content }, index) => (
