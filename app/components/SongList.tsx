@@ -12,36 +12,6 @@ const SongList = () => {
           imageUrl="/images/song-thumbnail/gms-live/kasih-karunia.png"
           link="/songs/gms-live/kasih-karunia"
         />
-        <SongCard
-          title="Freedom"
-          artist="GMS Live"
-          imageUrl="/images/song-thumbnail/gms-live/everybody-get-up.png"
-          link="/songs/freedom"
-        />
-        <SongCard
-          title="Everybody Get Up!"
-          artist="GMS Live"
-          imageUrl="/images/song-thumbnail/gms-live/everybody-get-up.png"
-          link="/songs/freedom"
-        />
-        <SongCard
-          title="Gerbang Kudusmu"
-          artist="GMS Live"
-          imageUrl="/images/song-thumbnail/gms-live/everybody-get-up.png"
-          link="/songs/freedom"
-        />
-        <SongCard
-          title="Send Revival"
-          artist="GMS Live"
-          imageUrl="/images/song-thumbnail/gms-live/everybody-get-up.png"
-          link="/songs/freedom"
-        />
-        <SongCard
-          title="Kumau B'ritakan"
-          artist="GMS Live"
-          imageUrl="/images/song-thumbnail/gms-live/everybody-get-up.png"
-          link="/songs/freedom"
-        />
       </div>
     </div>
   );
