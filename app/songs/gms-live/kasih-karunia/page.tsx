@@ -475,6 +475,9 @@ const KasihKarunia = () => {
           </div>
         ))}
       </div>
+
+      <p className="my-14 text-center">© 2024 Media Rajawali Indonesia</p>
+
       <div className="w-full mb-4">
         <iframe
           src="https://open.spotify.com/embed/track/5NCIeMUY00mNr78I2nozyz"
@@ -483,16 +486,14 @@ const KasihKarunia = () => {
           allow="encrypted-media"
         ></iframe>
       </div>
-      <div className="w-full mb-4 relative pb-9/16 h-0">
-        <iframe
-          src="https://www.youtube.com/embed/R50xhqiqdOQ"
-          className="absolute top-0 left-0 w-full h-full"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-      </div>
-      <p className="mt-2 text-center">© 2024 Media Rajawali Indonesia</p>
+
+      <iframe
+        src="https://www.youtube.com/embed/R50xhqiqdOQ"
+        className="w-full rounded-xl"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      ></iframe>
 
       <button
         onClick={toggleAutoScroll}
