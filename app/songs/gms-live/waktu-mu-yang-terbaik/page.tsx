@@ -5,7 +5,10 @@ import Image from "next/image";
 import jsPDF from "jspdf";
 import { FaPlay, FaPause } from "react-icons/fa"; // Import icons
 import LyricSection from "@/app/components/LyricSection";
-import { initialLyrics, sections } from "@/app/lyrics/gms-live/kasih-karunia";
+import {
+  initialLyrics,
+  sections,
+} from "@/app/lyrics/gms-live/waktu-mu-yang-terbaik";
 import { transposeChord, transposeLyrics } from "@/app/utils/transposeUtils";
 
 type LyricLine = {
@@ -34,7 +37,7 @@ const transposeKeys = [
   "B",
 ];
 
-const KasihKarunia = () => {
+const WaktuMuYangTerbaik = () => {
   const [lyrics, setLyrics] = useState<LyricSectionType[]>(initialLyrics);
   const [editMode, setEditMode] = useState(false);
   const [selectedSection, setSelectedSection] = useState(sections[0].content);
@@ -138,13 +141,13 @@ const KasihKarunia = () => {
       <div className="flex flex-col sm:flex-row bg-white rounded-2xl border overflow-hidden shadow mb-4 w-full">
         <Image
           className="w-full sm:w-32 h-32 rounded-t-2xl sm:rounded-l-2xl sm:rounded-t-none object-cover"
-          src="/images/song-thumbnail/gms-live/kasih-karunia.png"
-          alt="Kasih Karunia Thumbnail"
+          src="/images/song-thumbnail/gms-live/simply-worship.png"
+          alt="Waktu-Mu Yang Terbaik Thumbnail"
           width={1000}
           height={1000}
         />
         <div className="px-6 py-4 flex flex-col justify-center w-full">
-          <div className="font-bold text-xl mb-2">Kasih Karunia</div>
+          <div className="font-bold text-xl mb-2">Waktu-Mu Yang Terbaik</div>
           <p className="text-gray-700 text-base">GMS Live</p>
         </div>
       </div>
@@ -282,4 +285,4 @@ const KasihKarunia = () => {
   );
 };
 
-export default KasihKarunia;
+export default WaktuMuYangTerbaik;

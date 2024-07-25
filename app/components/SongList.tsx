@@ -12,6 +12,12 @@ const SongList = () => {
           imageUrl="/images/song-thumbnail/gms-live/kasih-karunia.png"
           link="/songs/gms-live/kasih-karunia"
         />
+        <SongCard
+          title="Waktu-Mu Yang Terbaik"
+          artist="GMS Live"
+          imageUrl="/images/song-thumbnail/gms-live/simply-worship.png"
+          link="/songs/gms-live/waktu-mu-yang-terbaik"
+        />
       </div>
     </div>
   );
