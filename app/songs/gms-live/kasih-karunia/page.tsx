@@ -3,21 +3,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import jsPDF from "jspdf";
-import { FaPlay, FaPause } from "react-icons/fa"; // Import icons
+import { FaPlay, FaPause } from "react-icons/fa";
 import LyricSection from "@/app/components/LyricSection";
-import { initialLyrics, sections } from "@/app/lyrics/gms-live/kasih-karunia";
-import { transposeChord, transposeLyrics } from "@/app/utils/transposeUtils";
-
-type LyricLine = {
-  chord: string;
-  lyric: string;
-};
-
-type LyricSectionType = {
-  id: string;
-  title: string;
-  content: LyricLine[];
-};
+import { initialLyrics, sections } from "@/app/lyrics/gmslive-kasih-karunia";
+import { transposeLyrics } from "@/app/utils/transposeUtils";
+import { LyricSectionType, LyricLine, Chord } from "@/app/utils/types";
 
 const transposeKeys = [
   "C",
@@ -34,14 +24,16 @@ const transposeKeys = [
   "B",
 ];
 
-const KasihKarunia = () => {
+const KasihKarunia: React.FC = () => {
   const [lyrics, setLyrics] = useState<LyricSectionType[]>(initialLyrics);
   const [editMode, setEditMode] = useState(false);
-  const [selectedSection, setSelectedSection] = useState(sections[0].content);
+  const [selectedSection, setSelectedSection] = useState<LyricLine[]>(
+    sections[0].content
+  );
   const [transposeSteps, setTransposeSteps] = useState(0);
   const [isAutoScroll, setIsAutoScroll] = useState(false);
   const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [scrollSpeed, setScrollSpeed] = useState(50); // Default speed is 50ms
+  const [scrollSpeed, setScrollSpeed] = useState(50);
 
   const toggleAutoScroll = () => {
     setIsAutoScroll(!isAutoScroll);
@@ -50,8 +42,8 @@ const KasihKarunia = () => {
   useEffect(() => {
     if (isAutoScroll) {
       const interval = setInterval(() => {
-        window.scrollBy(0, 1); // Scroll down by 1 pixel
-      }, 100 - scrollSpeed); // Use the inverted scrollSpeed
+        window.scrollBy(0, 1);
+      }, 100 - scrollSpeed);
       scrollIntervalRef.current = interval;
     } else {
       if (scrollIntervalRef.current) {
@@ -60,7 +52,6 @@ const KasihKarunia = () => {
       }
     }
 
-    // Clean up the interval on component unmount or when isAutoScroll changes
     return () => {
       if (scrollIntervalRef.current) {
         clearInterval(scrollIntervalRef.current);
@@ -113,22 +104,23 @@ const KasihKarunia = () => {
 
   const downloadPDF = () => {
     const doc = new jsPDF();
-    let y = 10; // Starting Y position
+    let y = 10;
     const pageHeight = doc.internal.pageSize.height;
-    lyrics.forEach((lyric) => {
-      doc.text(lyric.title, 10, y); // Add title to PDF
+    lyrics.forEach((lyric: LyricSectionType) => {
+      doc.text(lyric.title, 10, y);
       y += 10;
-      lyric.content.forEach((line) => {
+      lyric.content.forEach((line: LyricLine) => {
         if (y + 10 > pageHeight) {
           doc.addPage();
-          y = 10; // Reset y position for new page
+          y = 10;
         }
-        doc.text(line.chord, 10, y);
-        y += 5; // Move to next line
+        const chordText = line.chord.map((c: Chord) => c.text).join(" ");
+        doc.text(chordText, 10, y);
+        y += 5;
         doc.text(line.lyric, 10, y);
-        y += 10; // Move to next line
+        y += 10;
       });
-      y += 10; // Add extra space between sections
+      y += 10;
     });
     doc.save("lyrics.pdf");
   };
@@ -238,7 +230,7 @@ const KasihKarunia = () => {
       </div>
 
       <div>
-        {lyrics.map((section, index) => (
+        {lyrics.map((section: LyricSectionType, index: number) => (
           <LyricSection
             key={section.id}
             id={section.id}

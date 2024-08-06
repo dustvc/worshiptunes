@@ -1,11 +1,10 @@
-// components/LyricSection.tsx
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { FaTrashAlt, FaArrowUp, FaArrowDown } from "react-icons/fa";
 
 type LyricLine = {
-  chord: string;
+  chord: { text: string; position: number }[];
   lyric: string;
 };
 
@@ -18,19 +17,6 @@ type LyricSectionProps = {
   moveItemUp: (index: number) => void;
   moveItemDown: (index: number) => void;
   deleteSection: (index: number) => void;
-};
-
-const renderChord = (chord: string) => {
-  useEffect(() => {
-    console.log(`Rendering chord: ${chord}`);
-  }, [chord]);
-
-  const chordChars = chord.split("");
-  return chordChars.map((char, index) => (
-    <span key={index} className="text-red-700 font-bold">
-      {char}
-    </span>
-  ));
 };
 
 const LyricSection: React.FC<LyricSectionProps> = ({
@@ -49,18 +35,26 @@ const LyricSection: React.FC<LyricSectionProps> = ({
         {title}
       </h3>
       {content.map((line, idx) => (
-        <div key={idx} className="flex flex-col">
-          <span className="flex flex-wrap" style={{ letterSpacing: "2px" }}>
-            {line.chord.split(" ").map((chord, i) => (
-              <React.Fragment key={i}>
-                {renderChord(chord)}
-                <span>&nbsp;&nbsp;&nbsp;</span> {/* Adjustable space */}
-              </React.Fragment>
-            ))}
-          </span>
-          <span style={{ wordSpacing: "2px", letterSpacing: "2px" }}>
+        <div key={idx} className="flex flex-col relative">
+          <div className="absolute top-0 left-0 w-full text-blue-600 font-bold">
+            {Array.isArray(line.chord) &&
+              line.chord.map((chord, i) => (
+                <span
+                  key={i}
+                  style={{
+                    position: "absolute",
+                    left: `${chord.position}ch`,
+                    fontFamily: "monospace", // Ensure font-family is monospace
+                    fontSize: "1rem", // Ensure font size is the same
+                  }}
+                >
+                  {chord.text}
+                </span>
+              ))}
+          </div>
+          <div className="pt-6 font-mono" style={{ fontSize: "1rem" }}>
             {line.lyric}
-          </span>
+          </div>
         </div>
       ))}
       {editMode && (

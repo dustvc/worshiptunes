@@ -1,13 +1,4 @@
-type LyricLine = {
-  chord: string;
-  lyric: string;
-};
-
-type LyricSectionType = {
-  id: string;
-  title: string;
-  content: LyricLine[];
-};
+import { Chord, LyricSectionType, LyricLine } from "./types";
 
 const chordMap: { [key: string]: number } = {
   C: 0,
@@ -37,20 +28,27 @@ const semitoneMap: { [key: number]: string } = Object.keys(chordMap).reduce(
   {} as { [key: number]: string }
 );
 
-export const transposeChord = (chord: string, semitones: number): string => {
+const transposeSingleChord = (chord: string, semitones: number): string => {
   return chord.replace(/[A-G][#b]?/g, (match) => {
     const newSemitone = (chordMap[match] + semitones + 12) % 12;
     return semitoneMap[newSemitone];
   });
 };
 
+const transposeChord = (chords: Chord[], semitones: number): Chord[] => {
+  return chords.map((chord: Chord) => ({
+    ...chord,
+    text: transposeSingleChord(chord.text, semitones),
+  }));
+};
+
 export const transposeLyrics = (
   lyrics: LyricSectionType[],
   semitones: number
 ): LyricSectionType[] => {
-  return lyrics.map((section) => ({
+  return lyrics.map((section: LyricSectionType) => ({
     ...section,
-    content: section.content.map((line) => ({
+    content: section.content.map((line: LyricLine) => ({
       ...line,
       chord: transposeChord(line.chord, semitones),
     })),
