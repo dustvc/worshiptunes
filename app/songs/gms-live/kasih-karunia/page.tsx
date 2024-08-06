@@ -1,249 +1,425 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import jsPDF from "jspdf";
+import React, { useState } from "react";
+import SongSection from "@/app/components/SongSection";
+import SongInfo from "@/app/components/SongInfo";
 import { FaPlay, FaPause } from "react-icons/fa";
-import LyricSection from "@/app/components/LyricSection";
-import { initialLyrics, sections } from "@/app/lyrics/gmslive-kasih-karunia";
-import { transposeLyrics } from "@/app/utils/transposeUtils";
-import { LyricSectionType, LyricLine, Chord } from "@/app/utils/types";
 
-const transposeKeys = [
-  "C",
-  "C#",
-  "D",
-  "D#",
-  "E",
-  "F",
-  "F#",
-  "G",
-  "G#",
-  "A",
-  "A#",
-  "B",
+const initialLyrics = [
+  {
+    id: "1",
+    title: "Intro",
+    content: [
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "Fm/C", position: 3 },
+        ],
+        lyric: "",
+      },
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "Am", position: 3 },
+        ],
+        lyric: "",
+      },
+      {
+        chord: [
+          { text: "F", position: 0 },
+          { text: "Bb", position: 3 },
+          { text: "Dm", position: 7 },
+          { text: "G", position: 11 },
+        ],
+        lyric: "",
+      },
+    ],
+  },
+  {
+    id: "2",
+    title: "Verse 1",
+    content: [
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "F", position: 12 },
+        ],
+        lyric: "Kasih setia-Mu tak pernah pudar",
+      },
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "F", position: 6 },
+        ],
+        lyric: "Sungguh Kau Tuhan",
+      },
+      {
+        chord: [
+          { text: "Am", position: 3 },
+          { text: "E/Ab", position: 9 },
+        ],
+        lyric: "Yang panjang sabar",
+      },
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "D/F#", position: 5 },
+        ],
+        lyric: "Semua yang baik",
+      },
+      {
+        chord: [
+          { text: "Dm7", position: 0 },
+          { text: "G", position: 10 },
+        ],
+        lyric: "Anugerah dari SalibMu.",
+      },
+    ],
+  },
+  {
+    id: "3",
+    title: "Verse 2",
+    content: [
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "F", position: 12 },
+        ],
+        lyric: "Walaupun terkadang aku jatuh",
+      },
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "F", position: 12 },
+        ],
+        lyric: "Tak pernah berubah sayangMu",
+      },
+      {
+        chord: [
+          { text: "Am", position: 3 },
+          { text: "E/Ab", position: 9 },
+        ],
+        lyric: "Sungguh tak kuduga",
+      },
+      {
+        chord: [
+          { text: "C/D", position: 0 },
+          { text: "D/F#", position: 8 },
+        ],
+        lyric: "Kau tetap setia",
+      },
+      {
+        chord: [
+          { text: "Dm7", position: 0 },
+          { text: "G", position: 11 },
+        ],
+        lyric: "Menantiku ‘tuk berlari padaMu.",
+      },
+    ],
+  },
+  {
+    id: "4",
+    title: "Chorus",
+    content: [
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "G", position: 7 },
+          { text: "Am", position: 10 },
+          { text: "Em", position: 14 },
+        ],
+        lyric: "Besar... Kasih Karunia",
+      },
+      {
+        chord: [
+          { text: "F", position: 7 },
+          { text: "C", position: 20 },
+        ],
+        lyric: "Yang Engkau tunjukkan, Yesus",
+      },
+      {
+        chord: [
+          { text: "Dm7", position: 5 },
+          { text: "G", position: 11 },
+        ],
+        lyric: "Sungguh ‘ku bersyukur",
+      },
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "G", position: 7 },
+          { text: "Am", position: 10 },
+          { text: "Em", position: 14 },
+        ],
+        lyric: "Tinggi... melebihi langit",
+      },
+      {
+        chord: [
+          { text: "F", position: 7 },
+          { text: "C", position: 19 },
+        ],
+        lyric: "Kau angkat diriku dekat",
+      },
+      {
+        chord: [
+          { text: "Dm", position: 5 },
+          { text: "G", position: 12 },
+          { text: "C", position: 15 },
+        ],
+        lyric: "Ke tahta kasih karuniaMu.",
+      },
+    ],
+  },
+  {
+    id: "5",
+    title: "Bridge",
+    content: [
+      {
+        chord: [
+          { text: "D", position: 0 },
+          { text: "Em7", position: 3 },
+          { text: "D/F#", position: 7 },
+        ],
+        lyric: "Wo...o...o...o...",
+      },
+      {
+        chord: [
+          { text: "G", position: 0 },
+          { text: "D/F#", position: 6 },
+          { text: "Em7", position: 10 },
+          { text: "A", position: 15 },
+        ],
+        lyric: "Semua kar’na kasih karunia-Mu",
+      },
+      {
+        chord: [
+          { text: "D/F#", position: 0 },
+          { text: "F#/Bb", position: 6 },
+          { text: "Bm", position: 10 },
+          { text: "E/Ab", position: 15 },
+        ],
+        lyric: "Semua kar’na kasih karunia-Mu.",
+      },
+    ],
+  },
 ];
 
+const sections = [
+  {
+    label: "Intro",
+    title: "Intro",
+    content: [
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "Fm/C", position: 3 },
+        ],
+        lyric: "",
+      },
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "Am", position: 3 },
+        ],
+        lyric: "",
+      },
+      {
+        chord: [
+          { text: "F", position: 0 },
+          { text: "Bb", position: 2 },
+          { text: "Dm", position: 4 },
+          { text: "G", position: 6 },
+        ],
+        lyric: "",
+      },
+    ],
+  },
+  {
+    label: "Verse 1",
+    title: "Verse 1",
+    content: [
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "F", position: 12 },
+        ],
+        lyric: "Kasih setia-Mu tak pernah pudar",
+      },
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "F", position: 6 },
+        ],
+        lyric: "Sungguh Kau Tuhan",
+      },
+      {
+        chord: [
+          { text: "Am", position: 3 },
+          { text: "E/Ab", position: 9 },
+        ],
+        lyric: "Yang panjang sabar",
+      },
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "D/F#", position: 5 },
+        ],
+        lyric: "Semua yang baik",
+      },
+      {
+        chord: [
+          { text: "Dm7", position: 0 },
+          { text: "G", position: 10 },
+        ],
+        lyric: "Anugerah dari SalibMu.",
+      },
+    ],
+  },
+  {
+    label: "Verse 2",
+    title: "Verse 2",
+    content: [
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "F", position: 12 },
+        ],
+        lyric: "Walaupun terkadang aku jatuh",
+      },
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "F", position: 12 },
+        ],
+        lyric: "Tak pernah berubah sayangMu",
+      },
+      {
+        chord: [
+          { text: "Am", position: 3 },
+          { text: "E/Ab", position: 9 },
+        ],
+        lyric: "Sungguh tak kuduga",
+      },
+      {
+        chord: [
+          { text: "C/D", position: 0 },
+          { text: "D/F#", position: 8 },
+        ],
+        lyric: "Kau tetap setia",
+      },
+      {
+        chord: [
+          { text: "Dm7", position: 0 },
+          { text: "G", position: 11 },
+        ],
+        lyric: "Menantiku ‘tuk berlari padaMu.",
+      },
+    ],
+  },
+  {
+    label: "Chorus",
+    title: "Chorus",
+    content: [
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "G", position: 7 },
+          { text: "Am", position: 10 },
+          { text: "Em", position: 14 },
+        ],
+        lyric: "Besar... Kasih Karunia",
+      },
+      {
+        chord: [
+          { text: "F", position: 7 },
+          { text: "C", position: 20 },
+        ],
+        lyric: "Yang Engkau tunjukkan, Yesus",
+      },
+      {
+        chord: [
+          { text: "Dm7", position: 5 },
+          { text: "G", position: 11 },
+        ],
+        lyric: "Sungguh ‘ku bersyukur",
+      },
+      {
+        chord: [
+          { text: "C", position: 0 },
+          { text: "G", position: 7 },
+          { text: "Am", position: 10 },
+          { text: "Em", position: 14 },
+        ],
+        lyric: "Tinggi... melebihi langit",
+      },
+      {
+        chord: [
+          { text: "F", position: 7 },
+          { text: "C", position: 19 },
+        ],
+        lyric: "Kau angkat diriku dekat",
+      },
+      {
+        chord: [
+          { text: "Dm", position: 5 },
+          { text: "G", position: 12 },
+          { text: "C", position: 15 },
+        ],
+        lyric: "Ke tahta kasih karuniaMu.",
+      },
+    ],
+  },
+  {
+    label: "Bridge",
+    title: "Bridge",
+    content: [
+      {
+        chord: [
+          { text: "D", position: 0 },
+          { text: "Em7", position: 3 },
+          { text: "D/F#", position: 7 },
+        ],
+        lyric: "Wo...o...o...o...",
+      },
+      {
+        chord: [
+          { text: "G", position: 0 },
+          { text: "D/F#", position: 6 },
+          { text: "Em7", position: 10 },
+          { text: "A", position: 15 },
+        ],
+        lyric: "Semua kar’na kasih karunia-Mu",
+      },
+      {
+        chord: [
+          { text: "D/F#", position: 0 },
+          { text: "F#/Bb", position: 6 },
+          { text: "Bm", position: 10 },
+          { text: "E/Ab", position: 15 },
+        ],
+        lyric: "Semua kar’na kasih karunia-Mu.",
+      },
+    ],
+  },
+];
+
+export { initialLyrics, sections };
+
 const KasihKarunia: React.FC = () => {
-  const [lyrics, setLyrics] = useState<LyricSectionType[]>(initialLyrics);
-  const [editMode, setEditMode] = useState(false);
-  const [selectedSection, setSelectedSection] = useState<LyricLine[]>(
-    sections[0].content
-  );
-  const [transposeSteps, setTransposeSteps] = useState(0);
   const [isAutoScroll, setIsAutoScroll] = useState(false);
-  const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [scrollSpeed, setScrollSpeed] = useState(50);
 
   const toggleAutoScroll = () => {
     setIsAutoScroll(!isAutoScroll);
   };
 
-  useEffect(() => {
-    if (isAutoScroll) {
-      const interval = setInterval(() => {
-        window.scrollBy(0, 1);
-      }, 100 - scrollSpeed);
-      scrollIntervalRef.current = interval;
-    } else {
-      if (scrollIntervalRef.current) {
-        clearInterval(scrollIntervalRef.current);
-        scrollIntervalRef.current = null;
-      }
-    }
-
-    return () => {
-      if (scrollIntervalRef.current) {
-        clearInterval(scrollIntervalRef.current);
-        scrollIntervalRef.current = null;
-      }
-    };
-  }, [isAutoScroll, scrollSpeed]);
-
-  const moveItemUp = (index: number) => {
-    if (index === 0) return;
-    const items = Array.from(lyrics);
-    const [reorderedItem] = items.splice(index, 1);
-    items.splice(index - 1, 0, reorderedItem);
-    setLyrics(items);
-  };
-
-  const moveItemDown = (index: number) => {
-    if (index === lyrics.length - 1) return;
-    const items = Array.from(lyrics);
-    const [reorderedItem] = items.splice(index, 1);
-    items.splice(index + 1, 0, reorderedItem);
-    setLyrics(items);
-  };
-
-  const addNewSection = () => {
-    const newSection: LyricSectionType = {
-      id: `${lyrics.length + 1}`,
-      title: sections[sections.length - 1].label,
-      content: selectedSection,
-    };
-    setLyrics([...lyrics, newSection]);
-  };
-
-  const resetLyrics = () => {
-    setLyrics(initialLyrics);
-    setTransposeSteps(0);
-  };
-
-  const deleteSection = (index: number) => {
-    const items = Array.from(lyrics);
-    items.splice(index, 1);
-    setLyrics(items);
-  };
-
-  const handleTranspose = (steps: number) => {
-    const transposedLyrics = transposeLyrics(initialLyrics, steps);
-    setLyrics(transposedLyrics);
-    setTransposeSteps(steps);
-  };
-
-  const downloadPDF = () => {
-    const doc = new jsPDF();
-    let y = 10;
-    const pageHeight = doc.internal.pageSize.height;
-    lyrics.forEach((lyric: LyricSectionType) => {
-      doc.text(lyric.title, 10, y);
-      y += 10;
-      lyric.content.forEach((line: LyricLine) => {
-        if (y + 10 > pageHeight) {
-          doc.addPage();
-          y = 10;
-        }
-        const chordText = line.chord.map((c: Chord) => c.text).join(" ");
-        doc.text(chordText, 10, y);
-        y += 5;
-        doc.text(line.lyric, 10, y);
-        y += 10;
-      });
-      y += 10;
-    });
-    doc.save("lyrics.pdf");
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col sm:flex-row bg-white rounded-2xl border overflow-hidden shadow mb-4 w-full">
-        <Image
-          className="w-full sm:w-32 h-32 rounded-t-2xl sm:rounded-l-2xl sm:rounded-t-none object-cover"
-          src="/images/song-thumbnail/gms-live/kasih-karunia.png"
-          alt="Kasih Karunia Thumbnail"
-          width={1000}
-          height={1000}
-        />
-        <div className="px-6 py-4 flex flex-col justify-center w-full">
-          <div className="font-bold text-xl mb-2">Kasih Karunia</div>
-          <p className="text-gray-700 text-base">GMS Live</p>
-        </div>
-      </div>
-
-      <div className="mb-4 flex flex-wrap gap-2">
-        <button
-          className="bg-gray-700 text-white px-4 py-2 rounded-full border-2 border-gray-700 hover:animate-pulse"
-          onClick={() => setEditMode(!editMode)}
-        >
-          {editMode ? "Done" : "Edit Songmap"}
-        </button>
-        {editMode && (
-          <>
-            <button
-              className="bg-gray-700 text-white px-4 py-2 rounded-full border-2 border-gray-700 hover:animate-pulse"
-              onClick={addNewSection}
-            >
-              Add New Section
-            </button>
-            <select
-              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-full border-2 border-gray-700"
-              onChange={(e) =>
-                setSelectedSection(sections[parseInt(e.target.value)].content)
-              }
-            >
-              {sections.map((section, index) => (
-                <option key={section.label} value={index}>
-                  {section.label}
-                </option>
-              ))}
-            </select>
-            <button
-              className="bg-gray-700 text-white px-4 py-2 rounded-full border-2 border-gray-700 hover:animate-pulse"
-              onClick={resetLyrics}
-            >
-              Reset to Original
-            </button>
-          </>
-        )}
-        <button
-          className="bg-white text-gray-700 px-4 py-2 rounded-full border-2 border-gray-700 hover:animate-pulse"
-          onClick={downloadPDF}
-        >
-          Download Songmap
-        </button>
-      </div>
-
-      <div className="mb-4 flex flex-col">
-        <label
-          htmlFor="scrollSpeed"
-          className="text-sm font-medium text-gray-700 mb-2"
-        >
-          Scroll Speed
-        </label>
-        <input
-          type="range"
-          id="scrollSpeed"
-          min="1"
-          max="100"
-          value={scrollSpeed}
-          onChange={(e) => setScrollSpeed(Number(e.target.value))}
-          className="w-full h-2 bg-gray-200 rounded-lg cursor-pointer"
-          style={{ accentColor: "#4B5563" }}
-        />
-      </div>
-
-      <div className="mb-4">
-        <label
-          htmlFor="transpose"
-          className="text-sm font-medium text-gray-700 mb-2"
-        >
-          Transpose:
-        </label>
-        <div className="flex flex-wrap">
-          {transposeKeys
-            .sort((a, b) => a.localeCompare(b))
-            .map((key, index) => (
-              <button
-                key={key}
-                className={`px-4 py-2 border rounded-md m-1 transition-colors duration-200 ${
-                  transposeSteps === index - 3
-                    ? "bg-gray-700 text-white"
-                    : "bg-white text-black hover:bg-gray-200"
-                }`}
-                onClick={() => handleTranspose(index - 3)}
-              >
-                {key}
-              </button>
-            ))}
-        </div>
-      </div>
-
-      <div>
-        {lyrics.map((section: LyricSectionType, index: number) => (
-          <LyricSection
-            key={section.id}
-            id={section.id}
-            title={section.title}
-            content={section.content}
-            index={index}
-            editMode={editMode}
-            moveItemUp={moveItemUp}
-            moveItemDown={moveItemDown}
-            deleteSection={deleteSection}
-          />
-        ))}
-      </div>
+      <SongInfo
+        title="Kasih Karunia"
+        artist="GMS Live"
+        imageUrl="/images/song-thumbnail/gms-live/kasih-karunia.png"
+      />
+      <SongSection initialLyrics={initialLyrics} sections={sections} />
 
       <p className="my-14 text-center">© 2024 Media Rajawali Indonesia</p>
 

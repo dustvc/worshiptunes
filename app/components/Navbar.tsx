@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,16 +51,21 @@ const Navbar: React.FC = () => {
               </svg>
             </button>
           </div>
-          <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex-shrink-0">
-              <Link href="/">
-                <span className="text-xl font-bold cursor-pointer">
-                  Worship Tunes
-                </span>
-              </Link>
+          <div className="flex-1 flex items-center justify-center sm:justify-between sm:items-center">
+            <div className="flex items-center gap-2">
+              <Image
+                src={"/icon.png"}
+                width={100}
+                height={100}
+                alt="icon"
+                className="w-10"
+              />
+              <span className="text-lg font-bold text-gray-700 hidden sm:block">
+                ChordGo
+              </span>
             </div>
-            <div className="hidden sm:block sm:ml-6">
-              <div className="flex space-x-4">
+            <div className="hidden sm:block">
+              <div className="ml-auto flex items-center space-x-4">
                 <Link href="/">
                   <span className="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer">
                     Home
@@ -70,7 +76,7 @@ const Navbar: React.FC = () => {
                     About
                   </span>
                 </Link>
-                <Link href="/contact">
+                <Link href="/songs">
                   <span className="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer">
                     Song
                   </span>
@@ -95,7 +101,7 @@ const Navbar: React.FC = () => {
               About
             </span>
           </Link>
-          <Link href="/contact">
+          <Link href="/songs">
             <span className="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer">
               Song
             </span>
