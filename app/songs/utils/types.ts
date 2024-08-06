@@ -1,3 +1,4 @@
+// types.ts
 export type Chord = {
   text: string;
   position: number;

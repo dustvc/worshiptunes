@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import SongCard from "@/app/components/SongCard";
-import { db } from "@/app/utils/firebase";
+import { db } from "@/app/songs/utils/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 const SongList = () => {

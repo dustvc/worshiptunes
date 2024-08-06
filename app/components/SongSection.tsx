@@ -3,8 +3,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
 import LyricSection from "@/app/components/LyricSection";
-import { transposeLyrics } from "@/app/utils/transposeUtils";
-import { LyricSectionType, LyricLine, Chord } from "@/app/utils/types";
+import { transposeLyrics } from "@/app/songs/utils/transposeUtils";
+import { LyricSectionType, LyricLine, Chord } from "@/app/songs/utils/types";
 import jsPDF from "jspdf";
 
 const transposeKeys = [

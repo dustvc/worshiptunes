@@ -1,11 +1,20 @@
+// components/Navbar.tsx
 "use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { signOut } from "firebase/auth";
+import { auth } from "@/app/utils/firebase";
+import useAuth from "@/app/hooks/useAuth";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, loading } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+  };
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -52,18 +61,20 @@ const Navbar: React.FC = () => {
             </button>
           </div>
           <div className="flex-1 flex items-center justify-center sm:justify-between sm:items-center">
-            <div className="flex items-center gap-2">
-              <Image
-                src={"/icon.png"}
-                width={100}
-                height={100}
-                alt="icon"
-                className="w-10"
-              />
-              <span className="text-lg font-bold text-gray-700 hidden sm:block">
-                ChordGo
-              </span>
-            </div>
+            <Link href="/">
+              <div className="flex items-center gap-2">
+                <Image
+                  src={"/icon.png"}
+                  width={100}
+                  height={100}
+                  alt="icon"
+                  className="w-10"
+                />
+                <span className="text-lg font-bold text-gray-700 hidden sm:block">
+                  ChordGo
+                </span>
+              </div>
+            </Link>
             <div className="hidden sm:block">
               <div className="ml-auto flex items-center space-x-4">
                 <Link href="/">
@@ -81,6 +92,34 @@ const Navbar: React.FC = () => {
                     Song
                   </span>
                 </Link>
+                {loading ? null : user ? (
+                  <>
+                    <Link href="/dashboard">
+                      <span className="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer">
+                        Dashboard
+                      </span>
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/auth/login">
+                      <span className="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer">
+                        Login
+                      </span>
+                    </Link>
+                    <Link href="/auth/register">
+                      <span className="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer">
+                        Register
+                      </span>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -106,6 +145,34 @@ const Navbar: React.FC = () => {
               Song
             </span>
           </Link>
+          {loading ? null : user ? (
+            <>
+              <Link href="/dashboard">
+                <span className="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer">
+                  Dashboard
+                </span>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/auth/login">
+                <span className="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer">
+                  Login
+                </span>
+              </Link>
+              <Link href="/auth/register">
+                <span className="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer">
+                  Register
+                </span>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
